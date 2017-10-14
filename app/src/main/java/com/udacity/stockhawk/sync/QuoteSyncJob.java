@@ -6,11 +6,10 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.math.BigDecimal;
-import android.icu.text.SimpleDateFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.udacity.stockhawk.BuildConfig;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
@@ -22,14 +21,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoUnit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -65,7 +57,8 @@ public final class QuoteSyncJob {
         HttpUrl.Builder httpUrl = HttpUrl.parse(QUANDL_ROOT+symbol+".json").newBuilder();
         httpUrl.addQueryParameter("column_index", "4")  //closing price
                 .addQueryParameter("start_date", formatter.format(startDate))
-                .addQueryParameter("end_date", formatter.format(endDate));
+                .addQueryParameter("end_date", formatter.format(endDate))
+                .addQueryParameter("api_key", BuildConfig.QUANDL_API_KEY);
         return httpUrl.build();
     }
 
@@ -96,7 +89,7 @@ public final class QuoteSyncJob {
         quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
         quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
         quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-        quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+        quoteCV.put(Contract.Quote.COLUMN_HISTORY, historicData.toString());
 
         return quoteCV;
     }

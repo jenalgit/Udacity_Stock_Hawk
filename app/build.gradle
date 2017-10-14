@@ -5,6 +5,10 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
+def keysPropertiesFile = rootProject.file("keys.properties")
+def keysProperties = new Properties()
+keysProperties.load(new FileInputStream(keysPropertiesFile))
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -31,6 +35,9 @@ android {
             proguardFile "proguard-support-v7-appcompat.pro"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', 'QUANDL_API_KEY', keysProperties['Quandl_Api_Key']
     }
 
     //noinspection GroovyMissingReturnStatement
